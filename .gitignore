@@ -258,3 +258,8 @@ npm-debug.log
 /bower_components
 /node_modules
 /vendor
+
+# Security for API accesses
+#DROPBOXAPPSECRET
+#ONEDRIVEAPPSECRET
+#GDRIVEAPPSECRET
