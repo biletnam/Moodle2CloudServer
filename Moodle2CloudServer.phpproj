@@ -43,5 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CloudServices\example.txt" />
+    <Content Include="composer.json" />
   </ItemGroup>
 </Project>
