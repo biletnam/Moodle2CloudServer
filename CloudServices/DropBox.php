@@ -18,17 +18,16 @@ class DropBox extends CloudService
      *
      * @param  $file
      */
-    function upload($file)
+    function upload($file, $path)
     {
         $curl = curl_init('https://content.dropboxapi.com/2/files/upload');
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer '.$this->auth_token, 'Dropbox-API-Arg: '.json_encode(array('path'=>'/test.txt', 'autorename'=>true),JSON_FORCE_OBJECT), 'Content-Type: application/octet-stream'));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer '.$this->auth_token, 'Dropbox-API-Arg: '.json_encode(array('path'=>$path, 'autorename'=>false),JSON_FORCE_OBJECT), 'Content-Type: application/octet-stream'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_CAINFO,  getcwd()."/cacert.pem");
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, file_get_contents('./CloudServices/'.$file));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $file);
         $r = curl_exec($curl);
-        var_dump($r);
         curl_close($curl);
     }
 
@@ -87,7 +86,7 @@ class DropBox extends CloudService
     }
 
     /**
-     * 
+     *
      * @param  $token
      */
     function checkAuth($token)

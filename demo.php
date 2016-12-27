@@ -1,10 +1,6 @@
 <?php
 
-include_once('./LearningManagementServiceFactory.php');
-$lms = LearningManagementServiceFactory::create('Moodle');
-
-$lms->auth(array('user'=>214110962,'password'=>'xxxx'));
-$lms->
-
-
+include_once('CloudServiceFactory.php');
+$cs = CloudServiceFactory::create('DropBox');
+echo '<a href="'.$cs->getAuthLink().'">Click here :)</a>';
 ?>

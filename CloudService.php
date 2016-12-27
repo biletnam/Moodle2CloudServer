@@ -10,6 +10,6 @@
  */
 abstract class CloudService extends API
 {
-    abstract function upload($file);
+    abstract function upload($file, $path);
     abstract function createDirectory($dir_name);
 }

@@ -19,11 +19,11 @@ class Moodle extends LearningManagementService
 
     /**
      *
-     * @param  $fileID
+     * @param  $filePATH
      */
-    function download($fileID)
+    function download($filePATH)
     {
-        $link = $this->website.'/webservice/pluginfile.php'.$path;
+        $link = $filePATH.'&token='.$this->token;
         $curl = curl_init($link);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -37,11 +37,13 @@ class Moodle extends LearningManagementService
      */
     function getFilesByCourse($courseID)
     {
-        $link = $this->website.'/webservice/rest/server.php?wstoken='.$this->token.'&wsfunction=core_course_get_contents&courseid='.$courseid;
+        $link = $this->website.'/webservice/rest/server.php?moodlewsrestformat=json&wstoken='.$this->token.'&wsfunction=core_course_get_contents&courseid='.$courseID;
         $curl = curl_init($link);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CAINFO,  getcwd()."/cacert.pem");
+        $r = curl_exec($curl);
+        return json_decode($r, true);
     }
 
     #endregion
@@ -59,15 +61,38 @@ class Moodle extends LearningManagementService
         curl_setopt($curl, CURLOPT_CAINFO,  getcwd()."/cacert.pem");
         //curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         $r = curl_exec($curl);
-        $debug=json_decode($r, true);
-        $this->token = $debug['token'];
-        $this->uid=$credentials['user'];
-        return $debug['token'];
+        $info=json_decode($r, true);
+        if(isset($info['token'])){
+            $this->token = $info['token'];
+            $return = array('token'=>$this->token);
+        }else{
+            $return = array(0=>0);
+        }
+        curl_close($curl);
+        $link = $this->website.'/webservice/rest/server.php?moodlewsrestformat=json';
+        $post = array('wstoken'=>$this->token,'wsfunction'=>'core_webservice_get_site_info');
+        $curl = curl_init($link);
+        //curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($curl, CURLOPT_CAINFO,  getcwd()."/cacert.pem");
+        $r = json_decode(curl_exec($curl), true);
+        $this->uid=$r['userid'];
+        return $return;
     }
 
     function getCourses(){
-        $link = $this->website.'/webservice/rest/server.php?wstoken='.$this->token.'&wsfunction=core_enrol_get_users_courses&userid='.$this->uid;
-
+        $link = $this->website.'/webservice/rest/server.php?moodlewsrestformat=json';
+        $post = array('userid'=>$this->uid,'wstoken'=>$this->token,'wsfunction'=>'core_enrol_get_users_courses');
+        $curl = curl_init($link);
+        //curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($curl, CURLOPT_CAINFO,  getcwd()."/cacert.pem");
+        $r = curl_exec($curl);
+        return json_decode($r, true);
     }
 
     /**
@@ -76,7 +101,21 @@ class Moodle extends LearningManagementService
      */
     function checkAuth($token)
     {
+        $link = $this->website.'/webservice/rest/server.php?moodlewsrestformat=json';
+        $post = array('wstoken'=>$token,'wsfunction'=>'core_webservice_get_site_info');
+        $curl = curl_init($link);
+        //curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($curl, CURLOPT_CAINFO,  getcwd()."/cacert.pem");
+        $r = json_decode(curl_exec($curl), true);
+        if(isset($r['userid'])){
+            $this->uid=$r['userid'];
+            return true;
+        }else{
 
+        }
     }
 
 

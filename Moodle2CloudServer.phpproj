@@ -35,6 +35,7 @@
     <Compile Include="demo.php" />
     <Compile Include="index.php" />
     <Compile Include="LearningManagementServices\Moodle.php" />
+    <Compile Include="token.php" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CloudServices\" />
