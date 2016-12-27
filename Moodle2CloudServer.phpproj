@@ -29,12 +29,16 @@
     <Compile Include="CloudService.php" />
     <Compile Include="CloudServiceFactory.php" />
     <Compile Include="CloudServices\DropBox.php" />
+    <Compile Include="LearningManagementService.php" />
+    <Compile Include="LearningManagementServiceFactory.php" />
     <Compile Include="DROPBOXSECRET" />
     <Compile Include="demo.php" />
     <Compile Include="index.php" />
+    <Compile Include="LearningManagementServices\Moodle.php" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CloudServices\" />
+    <Folder Include="LearningManagementServices\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CloudServices\example.txt" />
